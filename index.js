@@ -35,3 +35,13 @@ exports.setDebug = function( bool ){
   TP.setCache( bool );
   TO.setVarMissingWarning( bool );
 };
+exports.render = function(res, templateName, context, ext) {
+  (new T.Template(templateName + (ext ? ext : '.html')))
+    .load(function(err, template) {
+      if (err) return console.log(err);
+      template.render(context, function(err, output) {
+        if (err) return console.log(err);
+        res.send(output.join(''));
+      });
+    });
+};
