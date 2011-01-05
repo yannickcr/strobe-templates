@@ -97,54 +97,68 @@ var getRegexForTag = function(tag, contents){
   return reg;
 };
 
-exports.trim = function(string){
-  return string.replace(/^\s+|\s+$/g, '');
-}
+var Filters = {
 
-exports.camelCase = function(string){
-  return string.replace(/-\D/g, function(match){
-    return match.charAt(1).toUpperCase();
-  });
-}
-
-exports.hyphenate = function(string){
-  return string.replace(/[A-Z]/g, function(match){
-    return ('-' + match.charAt(0).toLowerCase());
-});
-}
-
-exports.capitalize = function(string){
-  return string.replace(/\b[a-z]/g, function(match){
-    return match.toUpperCase();
-  });
-}
-
-exports.standardize = function(string){
-  return walk(string, special);
-},
-
-exports.getTags = function(string, options){
-	
-  return string.match(getRegexForTag(options[0], options[1])) || [];
-},
-
-exports.stripTags = function(string, options){
-  return string.replace(getRegexForTag(options[0], options[1]), '');
-},
-
-exports.tidy = function(string){
-  return walk(string, tidy);
-},
-
-exports.truncate = function(string, options){
-  if (options[1] == null && options.length == 1) options[1] = '…';
-  if (string.length > options[0]){
-    string = string.substring(0, options[0]);
-    if (options[3]){
-      var index = string.lastIndexOf(options[3]);
-      if (index != -1) string = string.substr(0, index);
+  trim: function(string){
+    return string.replace(/^\s+|\s+$/g, '');
+  },
+  
+  camelCase: function(string){
+    return string.replace(/-\D/g, function(match){
+      return match.charAt(1).toUpperCase();
+    });
+  },
+  
+  hyphenate: function(string){
+    return string.replace(/[A-Z]/g, function(match){
+      return ('-' + match.charAt(0).toLowerCase());
+    });
+  },
+  
+  capitalize: function(string){
+    return string.replace(/\b[a-z]/g, function(match){
+      return match.toUpperCase();
+    });
+  },
+  
+  standardize: function(string){
+    return walk(string, special);
+  },
+  
+  getTags: function(string, options){
+    return string.match(getRegexForTag(options[0], options[1])) || [];
+  },
+  
+  stripTags: function(string, options){
+    return string.replace(getRegexForTag(options[0], options[1]), '');
+  },
+  
+  tidy: function(string){
+    return walk(string, tidy);
+  },
+  
+  truncate: function(string, options){
+    if (options[1] == null && options.length == 1) options[1] = '…';
+    if (string.length > options[0]){
+      string = string.substring(0, options[0]);
+      if (options[3]){
+        var index = string.lastIndexOf(options[3]);
+        if (index != -1) string = string.substr(0, index);
+      }
+      if (options[1]) string += options[1];
     }
-    if (options[1]) string += options[1];
+    return string;
+  },
+  
+  /*
+   * Slugify, by [Stian Didriksen](https://github.com/stipsan/String.Slugify.js)
+   */
+  slug: function(string, options){
+    if (!options[0]) options[0] = '-';
+    var str = this.standardize(this.tidy(string)).replace(/[\s\.]+/g,options[0]).toLowerCase().replace(new RegExp('[^a-z0-9'+options[0]+']','g'),options[0]).replace(new RegExp(options[0]+'+','g'),options[0]);
+    if (str.charAt(str.length-1) == options[0]) str = str.substring(0, str.length-1);
+    return str;
   }
-  return string;
 }
+
+exports.Filters = Filters;

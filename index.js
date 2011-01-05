@@ -31,7 +31,7 @@ exports.version = "0.1";
 
 exports.Context  = C.Context;
 exports.Template = T.Template;
-exports.Filters  = F;
+exports.Filters  = F.Filters;
 exports.setTemplatesDir = TP.setTemplatesDir;
 exports.setDebug = function( bool ){
   TP.setCache( bool );

@@ -162,9 +162,9 @@ VarToken.prototype = {
     var output = context.get( this.lookup )
     if( Object.keys(this.filters).length > 0 ){
       for(filter in this.filters){
-        if( !F[filter] )
+        if( !F.Filters[filter] )
           return [FILTER_MISSING_WARNING.fmt( filter )];
-        output = F[filter](output, this.filters[filter].split(','));
+        output = F.Filters[filter](output, this.filters[filter].split(','));
       }
     }
     
