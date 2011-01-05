@@ -31,4 +31,5 @@ greeting == This text is a variable defined in the view.
 {% if 'foo bar' != 'bar foo' %}
 foo bar != bar foo
 {% endif %}
+{{ greeting|truncate:10 }}
 {% endblock %}

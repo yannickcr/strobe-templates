@@ -2,10 +2,12 @@ var sys      = require('sys')
 
     // Template module dependencies
   , E        = require('./exceptions')
+  , F        = require('./filters')
   , tags     = require('./tags')
   
     // Globals
   , VAR_TOKEN_MISSING_WARNING = global.SETTINGS && SETTINGS.DEBUG ? "<span style='color:red'>Missing variable '%s'</span>" : ""
+  , FILTER_MISSING_WARNING = global.SETTINGS && SETTINGS.DEBUG ? "<span style='color:red'>Missing filter '%s'</span>" : ""
 
   , STRING_TOKEN      = 1
   , BLOCK_TOKEN       = 2
@@ -136,7 +138,14 @@ BlockToken.prototype = {
 var VarToken = function( string ) { 
   // TODO: Add executing functions
   this.type   = VAR_TOKEN;
-  this.lookup = string; 
+
+  this.filters = {};
+  var string = string.split( '|' ), i, j, t;
+  for( i=1, j = string.length; i < j; ++i){
+    t = string[i].split(':');
+    this.filters[t[0]] = t[1] ? t[1] : '';
+  }
+  this.lookup = string[0];
 }
 
 VarToken.prototype = {
@@ -151,6 +160,14 @@ VarToken.prototype = {
    */
   render: function( context ){
     var output = context.get( this.lookup )
+    if( Object.keys(this.filters).length > 0 ){
+      for(filter in this.filters){
+        if( !F[filter] )
+          return [FILTER_MISSING_WARNING.fmt( filter )];
+        output = F[filter](output, this.filters[filter].split(','));
+      }
+    }
+    
     if( output === null )
       return [VAR_TOKEN_MISSING_WARNING.fmt( this.lookup )];
     return [output];
@@ -201,4 +218,7 @@ var makeToken = function( string, parent, main ){
 exports.makeToken = makeToken;
 exports.setVarMissingWarning = function( bool ){
   VAR_TOKEN_MISSING_WARNING = bool ? "<span style='color:red'>Missing variable '%s'</span>" : "";
+}
+exports.setFilterMissingWarning = function( bool ){
+  FILTER_MISSING_WARNING = bool ? "<span style='color:red'>Missing filter '%s'</span>" : ""
 }

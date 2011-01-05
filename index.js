@@ -23,17 +23,20 @@ require( "./extensions" );
 var T        = require('./template')
   , C        = require('./context')
   , TP       = require('./templateproto')
-  , TO       = require('./tokens');
+  , TO       = require('./tokens')
+  , F        = require('./filters');
 
 
 exports.version = "0.1";
 
 exports.Context  = C.Context;
 exports.Template = T.Template;
+exports.Filters  = F;
 exports.setTemplatesDir = TP.setTemplatesDir;
 exports.setDebug = function( bool ){
   TP.setCache( bool );
   TO.setVarMissingWarning( bool );
+  TO.setFilterMissingWarning( bool );
 };
 exports.render = function(res, templateName, context, ext) {
   (new T.Template(templateName + (ext ? ext : '.html')))

@@ -59,10 +59,6 @@ h3. Used Code
 
 * Visionmedia's "ext":http://github.com/visionmedia/ext.js library (extensions to Object and sprintf )
 
-h3. Todos
-
-* Add filters for variable tags
-
 h3. License
 
 (The MIT License)
