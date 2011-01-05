@@ -153,7 +153,7 @@ var Filters = {
   /*
    * Slugify, by [Stian Didriksen](https://github.com/stipsan/String.Slugify.js)
    */
-  slug: function(string, options){
+  slugify: function(string, options){
     if (!options[0]) options[0] = '-';
     var str = this.standardize(this.tidy(string)).replace(/[\s\.]+/g,options[0]).toLowerCase().replace(new RegExp('[^a-z0-9'+options[0]+']','g'),options[0]).replace(new RegExp(options[0]+'+','g'),options[0]);
     if (str.charAt(str.length-1) == options[0]) str = str.substring(0, str.length-1);
