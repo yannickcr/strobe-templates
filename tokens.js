@@ -140,10 +140,12 @@ var VarToken = function( string ) {
   this.type   = VAR_TOKEN;
 
   this.filters = {};
-  var string = string.split( '|' ), i, j, t;
-  for( i=1, j = string.length; i < j; ++i){
-    t = string[i].split(':');
-    this.filters[t[0]] = t[1] ? t[1] : '';
+  
+  var string = string.split( '|' ), i, j = string.length;
+  for(i=1; i < j; ++i){
+    string[i].replace(/^([A-Z0-9]+)(:(.*))?/ig, function(){
+      this.filters[arguments[1]] = arguments[3] ? arguments[3].replace(/^['|"](.*)['|"]$/, '$1') : null;
+    }.bind(this));
   }
   this.lookup = string[0];
 }
@@ -164,7 +166,7 @@ VarToken.prototype = {
       for(filter in this.filters){
         if( !F.Filters[filter] )
           return [FILTER_MISSING_WARNING.fmt( filter )];
-        output = F.Filters[filter](output, this.filters[filter].split(','));
+        output = F.Filters[filter](output, this.filters[filter]);
       }
     }
     

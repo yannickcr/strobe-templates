@@ -1,17 +1,16 @@
 /**
  * Filters for strobe template
- * (the syntax for filters options is very limited for now, it will evolve in a near future)
  * 
  * To add your owns filters:
  *
- *  templates.Filters.myFilter = function(string, options){
+ *  templates.Filters.myFilter = function(string, arg){
  *    [...]
  *    return string;
  *  }
  * 
  * and to use it in your templates:
  * 
- * {{ myVariable|myFilter:option1,option2,option3 }}
+ * {{ myVariable|myFilter:"argument" }}
  * 
  * See bellow for some filters examples
  * 
@@ -125,27 +124,30 @@ var Filters = {
     return walk(string, special);
   },
   
-  getTags: function(string, options){
-    return string.match(getRegexForTag(options[0], options[1])) || [];
+  getTags: function(string, arg){
+  	var arg = arg.split(',');
+    return string.match(getRegexForTag(arg[0], arg[1])) || [];
   },
   
-  stripTags: function(string, options){
-    return string.replace(getRegexForTag(options[0], options[1]), '');
+  stripTags: function(string, arg){
+  	var arg = arg.split(',');
+    return string.replace(getRegexForTag(arg[0], arg[1]), '');
   },
   
   tidy: function(string){
     return walk(string, tidy);
   },
   
-  truncate: function(string, options){
-    if (options[1] == null && options.length == 1) options[1] = '…';
-    if (string.length > options[0]){
-      string = string.substring(0, options[0]);
-      if (options[3]){
-        var index = string.lastIndexOf(options[3]);
+  truncate: function(string, arg){
+  	var arg = arg.split(',');
+    if (arg[1] == null && arg.length == 1) arg[1] = '…';
+    if (string.length > arg[0]){
+      string = string.substring(0, arg[0]);
+      if (arg[3]){
+        var index = string.lastIndexOf(arg[3]);
         if (index != -1) string = string.substr(0, index);
       }
-      if (options[1]) string += options[1];
+      if (arg[1]) string += arg[1];
     }
     return string;
   },
@@ -153,10 +155,10 @@ var Filters = {
   /*
    * Slugify, by [Stian Didriksen](https://github.com/stipsan/String.Slugify.js)
    */
-  slugify: function(string, options){
-    if (!options[0]) options[0] = '-';
-    var str = this.standardize(this.tidy(string)).replace(/[\s\.]+/g,options[0]).toLowerCase().replace(new RegExp('[^a-z0-9'+options[0]+']','g'),options[0]).replace(new RegExp(options[0]+'+','g'),options[0]);
-    if (str.charAt(str.length-1) == options[0]) str = str.substring(0, str.length-1);
+  slugify: function(string, arg){
+    if (!arg) var arg = '-';
+    var str = this.standardize(this.tidy(string)).replace(/[\s\.]+/g,arg).toLowerCase().replace(new RegExp('[^a-z0-9'+arg+']','g'),arg).replace(new RegExp(arg+'+','g'),arg);
+    if (str.charAt(str.length-1) == arg) str = str.substring(0, str.length-1);
     return str;
   }
 }
