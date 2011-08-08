@@ -140,9 +140,11 @@ var VarToken = function( string ) {
   this.type   = VAR_TOKEN;
 
   this.filters = {};
-  
-  var string = string.split( '|' ), i, j = string.length;
-  for(i=1; i < j; ++i){
+
+  var regex = /(?:[^\|\\]+|\\.)+/g, newString = [];
+  while (matched = regex.exec(string)) newString.push(matched[0].replace('\\|','\|'));
+  string = newString;
+  for(var i = 1, j = string.length; i < j; ++i){
     string[i].replace(/^([A-Z0-9]+)(:(.*))?/ig, function(){
       this.filters[arguments[1]] = arguments[3] ? arguments[3].replace(/^['|"](.*)['|"]$/, '$1') : null;
     }.bind(this));
